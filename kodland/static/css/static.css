@@ -1,0 +1,26 @@
+/* Style dla dedykowanych ikon w menu */
+.nav-icon {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 8px;
+    transition: 0.3s;
+    filter: drop-shadow(0 0 5px rgba(92, 108, 250, 0.5));
+}
+
+.nav-link:hover .nav-icon, .nav-link.active .nav-icon {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px #00ffcc);
+}
+
+/* Styl dla podświetlonego wyniku w kalkulatorze */
+.result-box {
+    display: none; 
+    margin-top: 30px; 
+    padding: 25px; 
+    background: rgba(20, 20, 30, 0.9); 
+    border: 1px solid #5c6cfa; 
+    border-radius: 15px; 
+    box-shadow: 0 0 25px rgba(92, 108, 250, 0.2);
+    animation: fadeIn 0.5s ease-out;
+}

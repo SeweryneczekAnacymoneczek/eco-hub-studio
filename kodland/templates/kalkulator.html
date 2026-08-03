@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="glass-panel">
+        <h2 class="gradient-title" style="font-size: 2.5em;">Analizator Emisji</h2>
+        <p class="subtitle">Wprowadź dane swojego środowiska, a nasz algorytm wyliczy Twój miesięczny ślad węglowy.</p>
+
+        <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);">
+            <label style="color: #94a3b8; font-weight: bold; font-size: 13px;">💻 Platforma sprzętowa</label>
+            
+            <div class="custom-select-wrapper" style="width: 100%; margin-top: 10px;">
+                <div class="custom-select" onclick="toggleDropdown('hw-options')" style="background: rgba(10, 10, 15, 0.6);">
+                    <span id="hw-selected" data-val="0.5">Komputer PC (High-End Gaming) ~500W</span>
+                    <span style="font-size: 10px;">▼</span>
+                </div>
+                <div class="custom-options" id="hw-options">
+                    <div class="custom-option" onclick="selectHw('0.5', 'Komputer PC (High-End Gaming) ~500W')">Komputer PC (High-End Gaming) ~500W</div>
+                    <div class="custom-option" onclick="selectHw('0.8', 'Serwer Dedykowany / VPS ~800W')">Serwer Dedykowany / VPS ~800W</div>
+                    <div class="custom-option" onclick="selectHw('0.15', 'Laptop Biurowy ~150W')">Laptop Biurowy ~150W</div>
+                    <div class="custom-option" onclick="selectHw('0.25', 'Konsola Nowej Generacji ~250W')">Konsola Nowej Generacji ~250W</div>
+                </div>
+            </div>
+
+            <label style="color: #94a3b8; font-weight: bold; font-size: 13px; margin-top: 25px; display: block;">⏳ Średni czas gry (godziny dziennie)</label>
+            <input type="number" id="czas" class="input-field" placeholder="Np. 4" min="1" max="24" value="4">
+
+            <button class="btn-neon" style="width: 100%; margin-top: 20px;" onclick="obliczSlad()">Wylicz ślad węglowy</button>
+        </div>
+
+        <div id="wynik-box" class="result-box" style="display: none; margin-top: 30px; padding: 25px; background: rgba(20, 20, 30, 0.9); border: 1px solid #5c6cfa; border-radius: 15px;">
+            <h3 style="margin: 0; color: #fff; text-transform: uppercase; font-size: 14px;">Twój miesięczny wpływ:</h3>
+            <p id="wynik-wartosc" style="font-size: 3.5em; font-weight: 800; color: #00ffcc; margin: 10px 0; text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);">0 kg CO₂</p>
+            <p id="wynik-opis" style="color: #94a3b8; font-size: 15px; margin: 0;"></p>
+        </div>
+    </div>
+
+    <script>
+        function selectHw(val, text) {
+            let el = document.getElementById('hw-selected');
+            el.innerHTML = text; el.dataset.val = val;
+            document.getElementById('hw-options').classList.remove('open');
+        }
+
+        function obliczSlad() {
+            const poborPraduKW = parseFloat(document.getElementById('hw-selected').dataset.val);
+            const godzinyDziennie = parseFloat(document.getElementById('czas').value);
+
+            if (isNaN(godzinyDziennie) || godzinyDziennie <= 0 || godzinyDziennie > 24) return alert("Wpisz poprawną wartość (1-24)!");
+
+            const emisjaCO2 = (poborPraduKW * godzinyDziennie * 30 * 0.7); 
+            const kilometry = Math.round(emisjaCO2 * 5); 
+
+            document.getElementById('wynik-box').style.display = 'block';
+            document.getElementById('wynik-wartosc').innerText = emisjaCO2.toFixed(1) + " kg CO₂";
+            document.getElementById('wynik-opis').innerHTML = `To odpowiednik przejechania <strong>${kilometry} km</strong> autem spalinowym.`;
+            
+            fetch('/kalkulator', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({score: emisjaCO2})
+            });
+        }
+    </script>
+{% endblock %}

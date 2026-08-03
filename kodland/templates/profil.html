@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="glass-panel">
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+            <h2 class="gradient-title" style="font-size: 2em; margin: 0;">Witaj, {{ session['username'] }}!</h2>
+            <a href="/wyloguj" style="color: #ff4757; text-decoration: none; font-weight: bold;">[ Wyloguj ]</a>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+            <div style="background: rgba(0,0,0,0.3); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                <h3 style="color: #94a3b8; margin-top: 0;">Eco-Towarzysz</h3>
+                {% if best_score and best_score < 100 %}
+                    <img src="{{ url_for('static', filename='img/wesola_maskotka.png') }}" style="max-width: 150px; filter: drop-shadow(0 0 20px rgba(0,255,204,0.4));" onerror="this.style.display='none'">
+                    <h4 style="color: #00ffcc;">Maskotka jest zachwycona!</h4>
+                {% elif best_score %}
+                    <img src="{{ url_for('static', filename='img/smutna_maskotka.png') }}" style="max-width: 150px; filter: grayscale(50%);" onerror="this.style.display='none'">
+                    <h4 style="color: #ff4757;">Maskotka jest smutna...</h4>
+                {% else %}
+                    <h4 style="color: #fff; margin-top: 50px;">Brak danych (użyj kalkulatora)</h4>
+                {% endif %}
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 30px; border-radius: 20px; text-align: left; border: 1px solid rgba(255,255,255,0.05);">
+                <h3 style="color: #94a3b8; margin-top: 0;">Twoje Statystyki</h3>
+                
+                <p style="color: #fff; font-weight: bold; margin-bottom: 5px;">Najlepszy wynik:</p>
+                <div style="font-size: 2.5em; font-weight: 800; color: #5c6cfa;">{% if best_score %}{{ "%.1f"|format(best_score) }} kg{% else %}--{% endif %}</div>
+                
+                <p style="color: #fff; font-weight: bold; margin-bottom: 5px; margin-top: 20px;">Punkty Społeczności:</p>
+                <div style="font-size: 2em; font-weight: 800; color: #00ffcc;">{{ points }} XP</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

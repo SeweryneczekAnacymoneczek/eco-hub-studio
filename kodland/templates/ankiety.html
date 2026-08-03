@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="glass-panel">
+        <h2 class="gradient-title" style="font-size: 2.5em;">STREFA GŁOSOWANIA</h2>
+        <p class="subtitle">Twój głos ma znaczenie. Decyduj o kierunku rozwoju i odbieraj nagrody.</p>
+        
+        <div id="ankieta-box" style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 15px; text-align: left;">
+            <h3 style="color: #fff; margin-top: 0;">🔥 Aktywna Ankieta: Jaki moduł optymalizacji wdrażamy?</h3>
+            <p style="color: #94a3b8; font-size: 14px;">Wybierz jedną z opcji poniżej. Za udział otrzymasz +50 Eco-Punktów.</p>
+            
+            <div class="poll-container">
+                <input type="radio" name="ankieta" id="opcja1" class="poll-input" value="1">
+                <label for="opcja1" class="poll-label">
+                    <span style="font-weight: bold; color: #fff;">1. Narzędzie do analizy zużycia prądu</span>
+                    <img src="{{ url_for('static', filename='img/komputer.png') }}" class="pixel-icon" onerror="this.style.display='none'">
+                </label>
+
+                <input type="radio" name="ankieta" id="opcja2" class="poll-input" value="2">
+                <label for="opcja2" class="poll-label">
+                    <span style="font-weight: bold; color: #fff;">2. Kalkulator zysków z trybu uśpienia</span>
+                    <img src="{{ url_for('static', filename='img/diament.png') }}" class="pixel-icon" onerror="this.style.display='none'">
+                </label>
+            </div>
+            
+            <button class="btn-neon" style="margin-top: 25px; width: 100%;" onclick="zatwierdzGlos()">Zatwierdź Głos</button>
+        </div>
+
+        <div id="sukces-box" style="display: none; background: rgba(0, 255, 204, 0.1); border: 1px solid #00ffcc; padding: 40px; border-radius: 15px;">
+            <h2 style="color: #00ffcc; font-size: 2em; margin-top: 0;">Dziękujemy za głos! 🎉</h2>
+            <p style="color: #fff; font-size: 16px;">Twoja opinia została zapisana.</p>
+            <p id="punkty-msg" style="color: #5c6cfa; font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <script>
+        function zatwierdzGlos() {
+            const selected = document.querySelector('input[name="ankieta"]:checked');
+            if (!selected) {
+                alert("Proszę wybrać jedną z opcji przed zatwierdzeniem!");
+                return;
+            }
+
+
+            fetch('/glosuj', { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('ankieta-box').style.display = 'none';
+                document.getElementById('sukces-box').style.display = 'block';
+                document.getElementById('punkty-msg').innerText = data.msg;
+            });
+        }
+    </script>
+{% endblock %}

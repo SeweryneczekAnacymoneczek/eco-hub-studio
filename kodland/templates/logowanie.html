@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="glass-panel" style="max-width: 400px; margin: auto; position: relative;">
+        
+        <div id="form-login">
+            <h2 class="gradient-title" style="font-size: 2em;">Zaloguj się</h2>
+            <p class="subtitle" style="font-size: 14px;">Dołącz, aby odblokować swojego Eco-Towarzysza.</p>
+
+            <form method="POST" action="/profil" style="text-align: left;">
+                <label style="color: #94a3b8; font-weight: bold;">Login</label>
+                <input type="text" name="username" class="input-field" required>
+                
+                <label style="color: #94a3b8; font-weight: bold; margin-top: 15px; display: block;">Hasło</label>
+                <input type="password" name="password" class="input-field" required>
+                
+                <button type="submit" name="action" value="login" class="btn-neon" style="width: 100%; margin-top: 20px;">Zaloguj</button>
+            </form>
+            <p style="margin-top: 20px; font-size: 13px;">Nie masz konta? <a href="#" onclick="toggleForms()" style="color: #00ffcc;">Zarejestruj się</a></p>
+        </div>
+
+        <div id="form-register" style="display: none;">
+            <h2 class="gradient-title" style="font-size: 2em;">Rejestracja</h2>
+            <p class="subtitle" style="font-size: 14px;">Zbuduj lepszą przyszłość.</p>
+
+            <form method="POST" action="/profil" style="text-align: left;">
+                <label style="color: #94a3b8; font-weight: bold;">Login</label>
+                <input type="text" name="username" class="input-field" required>
+
+                <label style="color: #94a3b8; font-weight: bold; margin-top: 10px; display: block;">Email</label>
+                <input type="email" name="email" class="input-field" required>
+                
+                <label style="color: #94a3b8; font-weight: bold; margin-top: 10px; display: block;">Hasło</label>
+                <input type="password" name="password" class="input-field" required>
+
+                <label style="color: #94a3b8; font-weight: bold; margin-top: 10px; display: block;">Powtórz hasło</label>
+                <input type="password" name="password_confirm" class="input-field" required>
+                
+                <button type="submit" name="action" value="register" class="btn-neon" style="width: 100%; margin-top: 20px;">Załóż konto</button>
+            </form>
+            <p style="margin-top: 20px; font-size: 13px;">Masz już konto? <a href="#" onclick="toggleForms()" style="color: #00ffcc;">Zaloguj się</a></p>
+        </div>
+    </div>
+
+    <script>
+        function toggleForms() {
+            const login = document.getElementById('form-login');
+            const reg = document.getElementById('form-register');
+            if (login.style.display === 'none') {
+                login.style.display = 'block'; reg.style.display = 'none';
+            } else {
+                login.style.display = 'none'; reg.style.display = 'block';
+            }
+        }
+    </script>
+{% endblock %}

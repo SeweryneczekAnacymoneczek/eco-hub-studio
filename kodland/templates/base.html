@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECO-HUB | Platforma</title>
+    <style>
+        html { scroll-behavior: smooth; top: 0 !important; }
+        .skiptranslate iframe { display: none !important; }
+        body {
+            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e2e8f0; overflow-x: hidden; background-color: #0a0a0a; top: 0 !important;
+        }
+
+        #bg-video {
+            position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%;
+            z-index: -2; object-fit: cover;
+        }
+        .video-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 15, 0.75); z-index: -1;
+        }
+
+        .navbar-wrapper {
+            display: flex; justify-content: space-between; align-items: center; 
+            width: 95%; max-width: 1200px; margin: 25px auto 0; z-index: 1000; position: relative;
+        }
+        
+        /* TWOJE LOGO */
+        .logo-container {
+            display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 900;
+            background: linear-gradient(135deg, #fff, #00ffcc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .logo-container img { width: 40px; height: 40px; border-radius: 8px; }
+
+        .navbar {
+            display: flex; gap: 8px; align-items: center;
+            background: rgba(20, 20, 30, 0.85); backdrop-filter: blur(15px);
+            padding: 8px 15px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .nav-link {
+            color: #94a3b8; text-decoration: none; padding: 10px 15px;
+            border-radius: 10px; font-weight: 600; font-size: 14px; transition: 0.3s; display: flex; align-items: center;
+        }
+        .nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+        .nav-link.active { color: #fff; background: #5c6cfa; box-shadow: 0 4px 15px rgba(92, 108, 250, 0.4); }
+        .nav-icon { width: 18px; height: 18px; margin-right: 8px; transition: 0.3s; filter: drop-shadow(0 0 5px rgba(92, 108, 250, 0.5)); }
+        .nav-link:hover .nav-icon, .nav-link.active .nav-icon { transform: scale(1.1); filter: drop-shadow(0 0 10px #00ffcc); }
+
+        /* CUSTOMOWY DROPDOWN (Zastępuje brzydki select) */
+        .custom-select-wrapper { position: relative; user-select: none; width: 140px; }
+        .custom-select {
+            background: rgba(10, 10, 15, 0.8); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px; padding: 10px 15px; font-weight: bold; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+        }
+        .custom-select:hover { border-color: #5c6cfa; }
+        .custom-options {
+            position: absolute; top: 110%; left: 0; right: 0; background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+            overflow: hidden; display: none; z-index: 99; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .custom-options.open { display: block; animation: fadeIn 0.2s; }
+        .custom-option { padding: 10px 15px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .custom-option:hover { background: #5c6cfa; color: #fff; }
+
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; animation: fadeIn 0.6s ease-out; position: relative; z-index: 10; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .glass-panel {
+            background: rgba(25, 25, 35, 0.9); backdrop-filter: blur(20px);
+            border-radius: 20px; padding: 40px; border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); text-align: center;
+        }
+        .gradient-title {
+            font-size: 3.2em; margin: 0 0 10px 0; background: linear-gradient(135deg, #fff, #5c6cfa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -1px;
+        }
+        .subtitle { color: #94a3b8; font-size: 1.1em; margin-bottom: 30px; line-height: 1.6; }
+        
+        .btn-neon {
+            background: linear-gradient(135deg, #5c6cfa, #3a47d5); color: #fff; border: none; padding: 15px 35px;
+            font-size: 16px; cursor: pointer; border-radius: 12px; font-weight: bold; transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(92, 108, 250, 0.3);
+        }
+        .btn-neon:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(92, 108, 250, 0.5); }
+        .input-field {
+            width: 100%; padding: 15px; margin: 10px 0; background: rgba(10, 10, 15, 0.6);
+            border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 10px; font-size: 15px; box-sizing: border-box;
+        }
+        .input-field:focus { outline: none; border-color: #5c6cfa; }
+        
+        /* Powiadomienia Flash */
+        .flash-messages { margin-bottom: 20px; }
+        .flash-msg { padding: 15px; border-radius: 10px; margin-bottom: 10px; font-weight: bold; }
+        .flash-success { background: rgba(0, 255, 204, 0.1); border: 1px solid #00ffcc; color: #00ffcc; }
+        .flash-error { background: rgba(255, 71, 87, 0.1); border: 1px solid #ff4757; color: #ff4757; }
+        
+        .pixel-icon { width: 32px; height: 32px; image-rendering: pixelated; }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop id="bg-video">
+        <source src="{{ url_for('static', filename='img/OVERPLAY-NA-STREAMY.mp4') }}" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="navbar-wrapper">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" onerror="this.style.display='none'"> 
+            ECO-HUB
+        </div>
+
+        <div class="navbar">
+            <a href="/" class="nav-link {% if active_page == 'index' %}active{% endif %}">
+                <img src="{{ url_for('static', filename='img/glowna.png') }}" class="nav-icon"> Główna
+            </a>
+            <a href="/kalkulator" class="nav-link {% if active_page == 'kalkulator' %}active{% endif %}">
+                <img src="{{ url_for('static', filename='img/kalkulator.png') }}" class="nav-icon"> Kalkulator
+            </a>
+            <a href="/ankiety" class="nav-link {% if active_page == 'ankiety' %}active{% endif %}">
+                <img src="{{ url_for('static', filename='img/ankiety.png') }}" class="nav-icon"> Głosowania
+            </a>
+            <a href="/narzedzia" class="nav-link {% if active_page == 'narzedzia' %}active{% endif %}">
+                <img src="{{ url_for('static', filename='img/narzedzia.png') }}" class="nav-icon"> Studio
+            </a>
+            <a href="/profil" class="nav-link {% if active_page == 'profil' %}active{% endif %}">
+                <img src="{{ url_for('static', filename='img/wesola_maskotka.png') }}" class="nav-icon"> Profil
+            </a>
+
+            <div class="custom-select-wrapper">
+                <div class="custom-select" onclick="toggleDropdown('lang-options')">
+                    <span id="lang-selected">🇵🇱 PL</span>
+                    <span style="font-size: 10px;">▼</span>
+                </div>
+                <div class="custom-options" id="lang-options">
+                    <div class="custom-option" onclick="selectLang('pl', '🇵🇱 PL')">🇵🇱 PL</div>
+                    <div class="custom-option" onclick="selectLang('en', '🇬🇧 EN')">🇬🇧 EN</div>
+                    <div class="custom-option" onclick="selectLang('es', '🇪🇸 ES')">🇪🇸 ES</div>
+                    <div class="custom-option" onclick="selectLang('de', '🇩🇪 DE')">🇩🇪 DE</div>
+                    <div class="custom-option" onclick="selectLang('ru', '🇷🇺 RU')">🇷🇺 RU</div>
+                    <div class="custom-option" onclick="selectLang('uk', '🇺🇦 UK')">🇺🇦 UK</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="google_translate_element" style="display:none;"></div>
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'pl', includedLanguages: 'pl,en,es,de,ru,uk', autoDisplay: false}, 'google_translate_element');
+        }
+
+        function toggleDropdown(id) {
+            document.getElementById(id).classList.toggle('open');
+        }
+        function selectLang(langCode, htmlContent) {
+            document.getElementById('lang-selected').innerHTML = htmlContent;
+            document.getElementById('lang-options').classList.remove('open');
+            
+            // Wywołaj zmianę w ukrytym Google Translate
+            var googleSelect = document.querySelector(".goog-te-combo");
+            if (googleSelect) {
+                googleSelect.value = langCode;
+                googleSelect.dispatchEvent(new Event("change"));
+            }
+        }
+        
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.custom-select') && !event.target.matches('#lang-selected')) {
+                var dropdowns = document.getElementsByClassName("custom-options");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('open')) {
+                        openDropdown.classList.remove('open');
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

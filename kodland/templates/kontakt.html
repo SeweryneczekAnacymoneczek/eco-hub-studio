@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="glass-panel">
+        <h2 class="gradient-title" style="font-size: 2.5em;">O Projekcie</h2>
+        <p class="subtitle">Dowiedz się, kto stoi za stworzeniem platformy i dlaczego to robimy.</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; margin-top: 30px;">
+            <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                <h3 style="margin-top: 0; color: #fff;">👨‍💻 Kto to stworzył?</h3>
+                <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">Projekt został stworzony w ramach hackathonu mającego na celu powstrzymanie zmian klimatycznych. Naszym celem jest pokazanie, że optymalizacja w świecie technologii i gamingu ma realny wpływ na planetę.</p>
+                <p style="color: #5c6cfa; font-weight: bold; font-size: 14px;">Kontakt: kontakt@ecohub-studio.pl</p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                <h3 style="margin-top: 0; color: #fff;">🎯 Komu się to przyda?</h3>
+                <ul style="color: #94a3b8; font-size: 14px; line-height: 1.6; padding-left: 20px;">
+                    <li><strong>Graczom:</strong> Zrozumiesz, ile zasobów zużywa Twój sprzęt podczas długich sesji.</li>
+                    <li><strong>Twórcom Serwerów:</strong> Zoptymalizujesz maszyny pod kątem zasilania i kosztów.</li>
+                    <li><strong>Każdemu:</strong> Zbudujesz świadomość ekologiczną poprzez grywalizację.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
