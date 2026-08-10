@@ -28,3 +28,5 @@ Sektor IT i gaming generują potężny ślad węglowy. Zamiast tworzyć kolejny 
 4. Uruchom aplikację:
    `python app.py`
 5. Otwórz przeglądarkę i wejdź pod adres: `http://127.0.0.1:5000`
+
+![stronka, możecie zobaczyc](image.png)

@@ -26,7 +26,7 @@
             width: 95%; max-width: 1200px; margin: 25px auto 0; z-index: 1000; position: relative;
         }
         
-        /* TWOJE LOGO */
+
         .logo-container {
             display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 900;
             background: linear-gradient(135deg, #fff, #00ffcc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -91,7 +91,7 @@
         }
         .input-field:focus { outline: none; border-color: #5c6cfa; }
         
-        /* Powiadomienia Flash */
+
         .flash-messages { margin-bottom: 20px; }
         .flash-msg { padding: 15px; border-radius: 10px; margin-bottom: 10px; font-weight: bold; }
         .flash-success { background: rgba(0, 255, 204, 0.1); border: 1px solid #00ffcc; color: #00ffcc; }
@@ -173,7 +173,6 @@
             document.getElementById('lang-selected').innerHTML = htmlContent;
             document.getElementById('lang-options').classList.remove('open');
             
-            // Wywołaj zmianę w ukrytym Google Translate
             var googleSelect = document.querySelector(".goog-te-combo");
             if (googleSelect) {
                 googleSelect.value = langCode;

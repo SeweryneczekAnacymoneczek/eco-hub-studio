@@ -45,7 +45,6 @@
         function aktualizujStatystyki() {
             let txt = poleTekstowe.value;
             document.getElementById('licznik-znakow').innerText = txt.length;
-            // Proste przeliczenie - przyjmujemy średnio 1 znak = 1 bajt (w UTF-8 bywa więcej, ale na potrzebe hackathonu jest git)
             let bytes = new Blob([txt]).size;
             document.getElementById('licznik-bajtow').innerText = bytes < 1024 ? bytes + " B" : (bytes/1024).toFixed(2) + " KB";
             generujGradient();

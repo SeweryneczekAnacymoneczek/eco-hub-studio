@@ -13,7 +13,7 @@
     filter: drop-shadow(0 0 10px #00ffcc);
 }
 
-/* Styl dla podświetlonego wyniku w kalkulatorze */
+
 .result-box {
     display: none; 
     margin-top: 30px; 

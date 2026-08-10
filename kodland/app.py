@@ -42,7 +42,7 @@ def kalkulator():
 def ankiety():
     return render_template('ankiety.html', active_page='ankiety')
 
-# NOWY ENDPOINT: Obsługa głosowania i dodawanie punktów
+
 @app.route('/glosuj', methods=['POST'])
 def glosuj():
     if 'user_id' in session:
