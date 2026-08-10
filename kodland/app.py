@@ -8,7 +8,6 @@ app.secret_key = 'super_tajny_klucz_hackathon_v2'
 def init_db():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-
     c.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT UNIQUE, email TEXT, password_hash TEXT, points INTEGER DEFAULT 0)''')
     c.execute('''CREATE TABLE IF NOT EXISTS results (id INTEGER PRIMARY KEY, user_id INTEGER, score REAL, date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     conn.commit()
@@ -41,7 +40,6 @@ def kalkulator():
 @app.route('/ankiety')
 def ankiety():
     return render_template('ankiety.html', active_page='ankiety')
-
 
 @app.route('/glosuj', methods=['POST'])
 def glosuj():
@@ -101,9 +99,18 @@ def profil():
         conn = get_db()
         user_data = conn.execute("SELECT points FROM users WHERE id = ?", (session['user_id'],)).fetchone()
         points = user_data['points'] if user_data else 0
-        best_score = conn.execute("SELECT MIN(score) as min_score FROM results WHERE user_id = ?", (session['user_id'],)).fetchone()['min_score']
+        
+        best_score_row = conn.execute("SELECT MIN(score) as min_score FROM results WHERE user_id = ?", (session['user_id'],)).fetchone()
+        best_score = best_score_row['min_score'] if best_score_row['min_score'] is not None else None
+        
+
+        history = conn.execute("SELECT score, datetime(date, 'localtime') as date_local FROM results WHERE user_id = ? ORDER BY date DESC", (session['user_id'],)).fetchall()
+        
+
+        top_users = conn.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 5").fetchall()
+        
         conn.close()
-        return render_template('profil.html', active_page='profil', best_score=best_score, points=points)
+        return render_template('profil.html', active_page='profil', best_score=best_score, points=points, history=history, top_users=top_users)
         
     return render_template('logowanie.html', active_page='profil')
 
