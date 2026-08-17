@@ -1,3 +1,8 @@
+## * © Sty4anyy, 2025–2026. Wszelkie prawa zastrzeżone.
+## * Zabrania się sprzedaży lub dystrybucji bez zgody autora. Naruszenie tych warunków może skutkować postępowaniem prawnym zgodnie z art. 78 Ustawy o prawie autorskim i prawach pokrewnych, dotyczącym naruszeń praw autorskich w formie cyfrowej.
+
+
+
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
@@ -59,6 +64,17 @@ def narzedzia():
 def kontakt():
     return render_template('kontakt.html', active_page='kontakt')
 
+
+@app.route('/usun_wynik/<int:result_id>', methods=['POST'])
+def usun_wynik(result_id):
+    if 'user_id' in session:
+        conn = get_db()
+        conn.execute("DELETE FROM results WHERE id = ? AND user_id = ?", (result_id, session['user_id']))
+        conn.commit()
+        conn.close()
+        flash("Pomyłka została usunięta z Twojej historii.", "success")
+    return redirect(url_for('profil'))
+
 @app.route('/profil', methods=['GET', 'POST'])
 def profil():
     if request.method == 'POST':
@@ -104,12 +120,10 @@ def profil():
         best_score = best_score_row['min_score'] if best_score_row['min_score'] is not None else None
         
 
-        history = conn.execute("SELECT score, datetime(date, 'localtime') as date_local FROM results WHERE user_id = ? ORDER BY date DESC", (session['user_id'],)).fetchall()
-        
-
+        history = conn.execute("SELECT id, score, datetime(date, 'localtime') as date_local FROM results WHERE user_id = ? ORDER BY date DESC", (session['user_id'],)).fetchall()
         top_users = conn.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 5").fetchall()
-        
         conn.close()
+        
         return render_template('profil.html', active_page='profil', best_score=best_score, points=points, history=history, top_users=top_users)
         
     return render_template('logowanie.html', active_page='profil')

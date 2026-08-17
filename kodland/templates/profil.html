@@ -30,6 +30,13 @@
             </div>
         </div>
 
+        {% if history %}
+        <div style="margin-top: 40px; background: rgba(0,0,0,0.3); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+            <h3 style="color: #fff; text-align: left; margin-top: 0;">📈 Analiza Twojej Emisji (Wykres)</h3>
+            <canvas id="ecoChart" style="max-height: 250px;"></canvas>
+        </div>
+        {% endif %}
+
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 40px;">
             <div>
                 <h3 style="color: #fff; text-align: left; margin-bottom: 10px;">🗂 Dziennik Emisji</h3>
@@ -40,6 +47,7 @@
                             <th>Data pomiaru</th>
                             <th>Wynik CO₂</th>
                             <th>Status</th>
+                            <th>Akcja</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,6 +62,11 @@
                                     <span class="status-badge badge-bad">Popraw to</span>
                                 {% endif %}
                             </td>
+                            <td>
+                                <form action="{{ url_for('usun_wynik', result_id=row['id']) }}" method="POST" style="margin: 0;">
+                                    <button type="submit" style="background: transparent; border: 1px solid #ff4757; color: #ff4757; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 11px; text-transform: uppercase;" onmouseover="this.style.background='#ff4757'; this.style.color='#fff'" onmouseout="this.style.background='transparent'; this.style.color='#ff4757'">Usuń</button>
+                                </form>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -62,7 +75,6 @@
                 <p style="text-align: left; color: #94a3b8;">Jeszcze nie wyliczałeś swojego śladu węglowego.</p>
                 {% endif %}
             </div>
-
 
             <div style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
                 <h3 style="color: #fff; text-align: left; margin-top: 0; margin-bottom: 20px;">🏆 Top 5 Graczy</h3>
@@ -80,4 +92,52 @@
             </div>
         </div>
     </div>
+
+    {% if history %}
+    <script>
+        const chartDataRaw = [
+            {% for row in history %}
+                { date: "{{ row['date_local'].split(' ')[0] }}", score: {{ row['score'] }} },
+            {% endfor %}
+        ];
+        
+        chartDataRaw.reverse();
+        
+        const labels = chartDataRaw.map(data => data.date);
+        const dataPoints = chartDataRaw.map(data => data.score);
+        const ctx = document.getElementById('ecoChart').getContext('2d');
+        
+        let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(92, 108, 250, 0.5)');
+        gradient.addColorStop(1, 'rgba(92, 108, 250, 0.0)');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Ślad Węglowy (kg CO2)',
+                    data: dataPoints,
+                    borderColor: '#5c6cfa',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#00ffcc',
+                    pointBorderColor: '#fff',
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                }
+            }
+        });
+    </script>
+    {% endif %}
 {% endblock %}

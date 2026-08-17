@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <label style="color: #94a3b8; font-weight: bold; font-size: 13px; margin-top: 25px; display: block;">⏳ Średni czas gry (godziny dziennie)</label>
+            <label style="color: #94a3b8; font-weight: bold; font-size: 13px; margin-top: 25px; display: block;">⏳ Średni czas gry lub pracy (godziny dziennie)</label>
             <input type="number" id="czas" class="input-field" placeholder="Np. 4" min="1" max="24" value="4">
 
             <button class="btn-neon" style="width: 100%; margin-top: 20px;" onclick="obliczSlad()">Wylicz ślad węglowy</button>
@@ -29,7 +29,12 @@
         <div id="wynik-box" class="result-box" style="display: none; margin-top: 30px; padding: 25px; background: rgba(20, 20, 30, 0.9); border: 1px solid #5c6cfa; border-radius: 15px;">
             <h3 style="margin: 0; color: #fff; text-transform: uppercase; font-size: 14px;">Twój miesięczny wpływ:</h3>
             <p id="wynik-wartosc" style="font-size: 3.5em; font-weight: 800; color: #00ffcc; margin: 10px 0; text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);">0 kg CO₂</p>
-            <p id="wynik-opis" style="color: #94a3b8; font-size: 15px; margin: 0;"></p>
+            <p id="wynik-opis" style="color: #94a3b8; font-size: 15px; margin: 0 0 15px 0;"></p>
+            
+            <div style="background: rgba(92, 108, 250, 0.1); border: 1px solid rgba(92, 108, 250, 0.3); border-radius: 10px; padding: 15px; text-align: left;">
+                <p style="margin: 0; color: #5c6cfa; font-weight: bold; font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Jak to policzyliśmy?</p>
+                <p id="wynik-wzor" style="margin: 0; color: #e2e8f0; font-family: monospace; font-size: 13px; word-break: break-all;"></p>
+            </div>
         </div>
     </div>
 
@@ -46,12 +51,16 @@
 
             if (isNaN(godzinyDziennie) || godzinyDziennie <= 0 || godzinyDziennie > 24) return alert("Wpisz poprawną wartość (1-24)!");
 
+
             const emisjaCO2 = (poborPraduKW * godzinyDziennie * 30 * 0.7); 
             const kilometry = Math.round(emisjaCO2 * 5); 
+            
+            const wzorTekst = `${poborPraduKW} kW × ${godzinyDziennie} h/dzień × 30 dni × 0.7 kg CO₂/kWh = ${emisjaCO2.toFixed(1)} kg`;
 
             document.getElementById('wynik-box').style.display = 'block';
             document.getElementById('wynik-wartosc').innerText = emisjaCO2.toFixed(1) + " kg CO₂";
             document.getElementById('wynik-opis').innerHTML = `To odpowiednik przejechania <strong>${kilometry} km</strong> autem spalinowym.`;
+            document.getElementById('wynik-wzor').innerText = wzorTekst;
             
             fetch('/kalkulator', {
                 method: 'POST', headers: {'Content-Type': 'application/json'},

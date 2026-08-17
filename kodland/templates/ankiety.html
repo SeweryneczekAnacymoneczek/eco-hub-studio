@@ -2,125 +2,143 @@
 {% block content %}
     <style>
         .poll-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr; 
-            gap: 20px;
-            margin-top: 25px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 30px;
         }
+        @media (max-width: 650px) { .poll-grid { grid-template-columns: 1fr; } }
+
+
+        .poll-checkbox { display: none; } 
         
-
-        @media (max-width: 650px) {
-            .poll-grid { grid-template-columns: 1fr; }
-        }
-
-        .poll-checkbox { 
-            display: none; 
-        } 
-        
-
         .poll-card {
-            background: rgba(10, 10, 15, 0.6);
-            border: 2px solid rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 100%;
-            box-sizing: border-box;
+            background: linear-gradient(145deg, rgba(15, 15, 20, 0.7), rgba(10, 10, 15, 0.9));
+            border: 2px solid rgba(255,255,255,0.06); border-radius: 18px; 
+            padding: 24px 24px 24px 55px; 
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; justify-content: space-between;
+            height: 100%; box-sizing: border-box; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            position: relative; overflow: hidden;
         }
         
+
+        .custom-indicator {
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 22px; height: 22px; border: 2px solid #5c6cfa; border-radius: 6px;
+            transition: all 0.3s ease; box-shadow: 0 0 10px rgba(92,108,250,0.2);
+            background: rgba(10, 10, 15, 0.8);
+        }
 
         .poll-card:hover {
-            border-color: #5c6cfa;
-            background: rgba(92, 108, 250, 0.1);
-            transform: translateY(-3px);
+            border-color: #5c6cfa; transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.5);
         }
         
 
         .poll-checkbox:checked + .poll-card {
-            border-color: #00ffcc;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-            background: rgba(0, 255, 204, 0.05);
+            border-color: #00ffcc; background: rgba(0, 255, 204, 0.08);
+            animation: neonPulse 2s infinite alternate;
+        }
+
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 15px rgba(0, 255, 204, 0.1), inset 0 0 10px rgba(0, 255, 204, 0.05); }
+            100% { box-shadow: 0 0 30px rgba(0, 255, 204, 0.4), inset 0 0 20px rgba(0, 255, 204, 0.2); }
+        }
+
+        /* Zaznaczanie naszego customowego checkboxa */
+        .poll-checkbox:checked + .poll-card .custom-indicator {
+            background: #00ffcc; border-color: #00ffcc; box-shadow: 0 0 15px #00ffcc;
+        }
+        .poll-checkbox:checked + .poll-card .custom-indicator::after {
+            content: '✔'; position: absolute; left: 4px; top: -1px;
+            color: #050505; font-size: 16px; font-weight: 900;
         }
         
         .poll-text {
-            font-weight: bold;
-            color: #fff;
-            font-size: 15px;
-            line-height: 1.5;
-            padding-right: 15px;
+            font-weight: 700; color: #fff; font-size: 16px; line-height: 1.4; 
+            padding-right: 15px; text-align: left; z-index: 1;
         }
+        
+
+        .poll-icon-wrapper img, .poll-icon-wrapper span {
+            width: 40px; height: 40px; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+            transition: 0.3s;
+        }
+        .poll-card:hover .poll-icon-wrapper { transform: scale(1.15) rotate(5deg); }
     </style>
 
     <div class="glass-panel">
-        <h2 class="gradient-title" style="font-size: 2.5em;">STREFA GŁOSOWANIA</h2>
-        <p class="subtitle">Twój głos ma znaczenie. Decyduj o kierunku rozwoju i odbieraj nagrody.</p>
+        <h2 class="gradient-title" style="font-size: 2.8em;">STREFA GŁOSOWANIA</h2>
+        <p class="subtitle">Twój głos kształtuje naszą platformę. Wybieraj mądrze i zbieraj nagrody.</p>
         
-        <div id="ankieta-box" style="background: rgba(0,0,0,0.3); padding: 30px; border-radius: 20px; text-align: left; border: 1px solid rgba(255,255,255,0.05);">
-            <h3 style="color: #fff; margin-top: 0; display: flex; align-items: center; gap: 10px;">
-                🔥 Aktywna Ankieta: Jakie moduły optymalizacji wdrażamy?
-            </h3>
-            <p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px;">Możesz zaznaczyć wiele odpowiedzi naraz! Za udział otrzymasz +50 Eco-Punktów.</p>
+        <div id="ankieta-box" style="background: rgba(0,0,0,0.4); padding: 35px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                <span style="font-size: 28px; filter: drop-shadow(0 0 10px #ff9f43);">🔥</span>
+                <h3 style="color: #fff; margin: 0; font-size: 22px;">Aktywna Ankieta: Moduły optymalizacji</h3>
+            </div>
+            <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">Możesz zaznaczyć wiele odpowiedzi. Za udział do Twojego konta trafi <strong>+50 XP</strong>.</p>
             
             <div class="poll-grid">
-                
                 <div style="position: relative;">
                     <input type="checkbox" name="ankieta" id="opcja1" class="poll-checkbox" value="1">
                     <label for="opcja1" class="poll-card">
+                        <div class="custom-indicator"></div>
                         <span class="poll-text">1. Narzędzie do analizy zużycia prądu</span>
-                        <img src="{{ url_for('static', filename='img/komputer.png') }}" class="pixel-icon" onerror="this.style.display='none'">
+                        <div class="poll-icon-wrapper">
+                            <img src="{{ url_for('static', filename='img/komputer.png') }}" onerror="this.outerHTML='<span style=\'font-size:36px;\'>💻</span>'">
+                        </div>
                     </label>
                 </div>
 
                 <div style="position: relative;">
                     <input type="checkbox" name="ankieta" id="opcja2" class="poll-checkbox" value="2">
                     <label for="opcja2" class="poll-card">
+                        <div class="custom-indicator"></div>
                         <span class="poll-text">2. Kalkulator zysków z trybu uśpienia</span>
-                        <img src="{{ url_for('static', filename='img/diament.png') }}" class="pixel-icon" onerror="this.style.display='none'">
+                        <div class="poll-icon-wrapper">
+                            <img src="{{ url_for('static', filename='img/diament.png') }}" onerror="this.outerHTML='<span style=\'font-size:36px;\'>💎</span>'">
+                        </div>
                     </label>
                 </div>
 
                 <div style="position: relative;">
                     <input type="checkbox" name="ankieta" id="opcja3" class="poll-checkbox" value="3">
                     <label for="opcja3" class="poll-card">
+                        <div class="custom-indicator"></div>
                         <span class="poll-text">3. Zaawansowane wykresy zużycia serwerów</span>
-                        <img src="{{ url_for('static', filename='img/gwiazda.png') }}" class="pixel-icon" onerror="this.style.display='none'">
+                        <div class="poll-icon-wrapper">
+                            <img src="{{ url_for('static', filename='img/gwiazda.png') }}" onerror="this.outerHTML='<span style=\'font-size:36px;\'>⭐</span>'">
+                        </div>
                     </label>
                 </div>
 
                 <div style="position: relative;">
                     <input type="checkbox" name="ankieta" id="opcja4" class="poll-checkbox" value="4">
                     <label for="opcja4" class="poll-card">
+                        <div class="custom-indicator"></div>
                         <span class="poll-text">4. Ligi społecznościowe (rywalizacja)</span>
-                        <img src="{{ url_for('static', filename='img/korona.png') }}" class="pixel-icon" onerror="this.style.display='none'">
+                        <div class="poll-icon-wrapper">
+                            <img src="{{ url_for('static', filename='img/korona.png') }}" onerror="this.outerHTML='<span style=\'font-size:36px;\'>👑</span>'">
+                        </div>
                     </label>
                 </div>
-
             </div>
             
-            <button class="btn-neon" style="margin-top: 35px; width: 100%; padding: 18px; font-size: 18px;" onclick="zatwierdzGlos()">Zatwierdź Głos</button>
+            <button class="btn-neon" style="margin-top: 40px; width: 100%; padding: 20px; font-size: 18px;" onclick="zatwierdzGlos()">Zatwierdź Wybór</button>
         </div>
 
-        <div id="sukces-box" style="display: none; background: rgba(0, 255, 204, 0.1); border: 1px solid #00ffcc; padding: 40px; border-radius: 15px; margin-top: 20px;">
-            <h2 style="color: #00ffcc; font-size: 2em; margin-top: 0;">Dziękujemy za głos! 🎉</h2>
-            <p style="color: #fff; font-size: 16px;">Twoja opinia została zapisana w systemie.</p>
-            <p id="punkty-msg" style="color: #5c6cfa; font-weight: bold; font-size: 18px;"></p>
+        <div id="sukces-box" style="display: none; background: rgba(0, 255, 204, 0.08); border: 2px solid #00ffcc; padding: 50px; border-radius: 20px; margin-top: 20px; box-shadow: 0 0 30px rgba(0,255,204,0.15);">
+            <div style="font-size: 50px; margin-bottom: 15px;" class="floating">🏆</div>
+            <h2 style="color: #00ffcc; font-size: 2.5em; margin-top: 0; text-shadow: 0 0 15px rgba(0,255,204,0.4);">Dziękujemy!</h2>
+            <p style="color: #e2e8f0; font-size: 18px;">Twoja opinia zasila nasz system.</p>
+            <p id="punkty-msg" style="color: #5c6cfa; font-weight: 900; font-size: 22px; margin-top: 20px;"></p>
         </div>
     </div>
 
     <script>
         function zatwierdzGlos() {
-
             const selected = document.querySelectorAll('input[name="ankieta"]:checked');
-            
             if (selected.length === 0) {
                 alert("Wybierz przynajmniej jedną opcję, żeby zgarnąć punkty!");
                 return;
             }
-
             fetch('/glosuj', { method: 'POST' })
             .then(res => res.json())
             .then(data => {
